@@ -29,27 +29,36 @@ function Board({ xIsNext, squares, onPlay }) {
   } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
-
-  return (
-    <>
-      <div className="status">{status}</div>
-      <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </div>
-    </>
+  const renderSquare = (i) => (
+    <Square value={squares[i]} onSquareClick={() => handleClick(i)} />
   );
+
+  const renderRow = (rIndex) => { // kako for i=0; i<rindex; i++
+    const squaresInRow = Array(3).fill(null).map((_, colIndex) => { // kako j=0; j<3;j++
+      console.log(rIndex)
+      console.log(colIndex)
+      const squareIndex = rIndex * 3 + colIndex;
+      console.log(squareIndex)
+      return renderSquare(squareIndex);
+    });
+
+    return (
+      <div key={rIndex} className="board-row">
+        {squaresInRow}
+      </div>
+    );
+  };
+  const boardRows = Array(3).fill(null).map((_, rIndex) => renderRow(rIndex));
+// In this case, the callback function has two parameters: the current element of the array
+// (represented by the underscore _, which is a convention
+// to indicate that the parameter is not used) and the index of the current element, which is rowIndex in this case.
+return (
+  <>
+        <div className="status">{status}</div>
+        <div>{boardRows}</div>;
+        </>
+  );
+  
 }
 
 export default function Game() {
@@ -71,17 +80,26 @@ export default function Game() {
     setCurrentMove(nextMove);
   }
 
+ 
+
   const moves = history.map((squares, move) => {
     let description;
+   
+   
     if (move > 0) {
-      description = 'Go to move #' + move;
+      description = 'You are at move #' + move;
     } else {
-      description = 'Go to game start';
+      description = 'You are at game start';
     }
     return (
+      <div>
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        <div>
+        {description}
+        <button onClick={() => jumpTo(move)} style={{ display: "none"}}></button>
+        </div>
       </li>
+      </div>
     );
   });
 
@@ -93,9 +111,15 @@ export default function Game() {
       </div>
       <div className="game-info">
         <ol>{moves}</ol>
+      
       </div>
     </div>
   );
+}
+
+function addColor(element)
+{
+  element.className = 'red'
 }
 
 function calculateWinner(squares) {
@@ -114,6 +138,7 @@ function calculateWinner(squares) {
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a];
     }
+
   }
   return null;
 }

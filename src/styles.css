@@ -12,7 +12,7 @@ h1 {
   margin-top: 0;
   font-size: 22px;
 }
-
+.
 h2 {
   margin-top: 0;
   font-size: 20px;
@@ -75,6 +75,9 @@ body {
   clear: both;
   content: '';
   display: table;
+}
+.red {
+  color: red;
 }
 
 .status {
